@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <form style="display: flex; flex-direction: column;" id="form">
+            <input type="text" id="word">
+            <label for="word" id="word-label"> Type word</label>
+            <input type="definition" id="definition">
+            <label for="" id="definition-label">Write definition</label>
+            <button type="submit" id="submit-button"> submit </button>
+        </form>
+    </div>
+</body>
+<script>
+    import {Validation} from "./validation.js"
+    const form = document.getElementById("form");
+    form.addEventListener("submit", async () => {
+        const wordInput = document.getElementById("word").value
+        const wordLabel = document.getElementById("word-label")
+        const definitionLabel  = document.getElementById("definition-label")
+        const definitionInput = document.getElementById("definition").value
+        if (Validation.validate(wordInput) && Validation.validate(definitionInput)) {
+            const formInfo = {
+                word : wordInput,
+                definition : definitionInput
+            }
+            const response = await fetch("/api/definitions", {
+                method: "POST",
+                body: formInfo
+            });
+            if (response.ok) {
+                const data = await response.json();
+                
+            }
+        } else {
+            if (!Validation.validate(wordInput)) {
+                wordInput.style.borderColor = "red"
+                wordLabel.innerHTML = "Please provide a word"
+                wordLabel.style.color = "red"
+            } if(!Validation.validate(definitionInput)) {
+                definitionInput.style.borderColor = "red"
+                definitionLabel.innerHTML = "Please provide a definition"
+                definitionLabel.style.color = "red"
+            }
+
+        }
+
+
+    })
+    
+    
+</script>
+</html>
