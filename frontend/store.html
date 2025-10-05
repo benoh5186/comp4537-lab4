@@ -14,12 +14,17 @@
             <label for="" id="definition-label">Write definition</label>
             <button type="submit" id="submit-button"> submit </button>
         </form>
+        <div>
+            <p id="message"></p>
+        </div>
     </div>
 </body>
 <script type="module">
     import {Validation} from "./utility.js"
     const form = document.getElementById("form");
-    form.addEventListener("submit", async () => {
+    const message = document.getElementById("message")
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
         const wordInput = document.getElementById("word").value
         const wordLabel = document.getElementById("word-label")
         const definitionLabel  = document.getElementById("definition-label")
@@ -29,13 +34,20 @@
                 word : wordInput,
                 definition : definitionInput
             }
-            const response = await fetch("https://localhost:8000/definitions", {
+            const response = await fetch("http://localhost:8000/definitions", {
                 method: "POST",
-                body: formInfo
+                headers: {
+                        "Content-Type": "application/json" 
+                    },
+                body:  JSON.stringify(formInfo)
             });
             if (response.ok) {
+                console.log("ok")
                 const data = await response.json();
+                message.innerHTML = data.message
                 
+            } else {
+                console.log("nah")
             }
         } else {
             if (!Validation.validate(wordInput)) {

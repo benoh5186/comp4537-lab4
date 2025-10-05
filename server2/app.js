@@ -4,8 +4,6 @@ const url = require("url");
 let requestCount = 0;
 const dictionary = []
 
-
-
 class Server {
     constructor(port) {
         this.port = port
@@ -14,10 +12,6 @@ class Server {
                 API.handleRequest(req, res);
             }
         )
-
-        // will remove
-        const e = new Entry("book", "book's definition")
-        dictionary.push(e)
     }
     start() {
         this.server.listen(this.port)
@@ -27,16 +21,16 @@ class Server {
 class API {
 
     static async handleRequest(req, res) {
-        const q = url.parse(req.url, true)
+        const method = req.method 
 
-        if(q.pathname === "/definitions/"){
-            const method = req.method 
-            if(method === "POST") {
+        switch(method) {
+            case "POST": 
                 await this.handlePostRequest(req, res)
-            } else {
+                break;
+            case "GET": 
                 this.handleGetRequest(req, res)
-            }
-        } else {
+                break;
+            default:
                 res.writeHead(404, "application/json")
                 res.write(JSON.stringify({error : "incorrect endpoint"}))
                 res.end()
@@ -47,9 +41,7 @@ class API {
     static handleGetRequest(req, res) {
         requestCount += 1
         let response = null
-        const q = url.parse(req.url, true)
-        
-        const query = q.query.word
+        const query = url.parse(req.url, true).query["word"]
 
         dictionary.forEach((entry) => {
             if(entry.getWord() === query) {
@@ -62,7 +54,7 @@ class API {
             res.end(response)
         } else {
             res.writeHead(200, {"Content-type": "text/html"})
-            res.end(`Request# ${requestCount}, word '${query}' not found!`)
+            res.end(`Request# ${requestCount}, word '${query} not found!'`)
         }
 
     }
