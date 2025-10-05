@@ -69,20 +69,23 @@ class API {
     static async handlePostRequest(req, res) {
         requestCount += 1
         try{
+            let wordExists = false
             const body = await API.getRequestBody(req);
             const data = JSON.parse(body)
-            const word = data.word
-            const definition = data.definition 
-            const wordObject = new Entry(word, definition)
+            const wordObject = new Entry(data.word, data.definition)
             const date = new Date().toDateString()
-            let message =`$#${requestCount} updated on ${date}: there are ${dictionary.length} of entries in the dictionary`;
+            let message;
             dictionary.forEach(wordObject => {
-                if (word === wordObject.getWord()) {
-                    message = `Warning! ${word} already exists`
-
+                if (data.word === wordObject.getWord()) {
+                    wordExists = true;
                 }
             })
-            dictionary.push(wordObject);
+            if (wordExists) {
+                message = `#${requestCount}: Warning! ${data.word} already exists`
+            } else {
+                dictionary.push(wordObject);
+                message =`#${requestCount} updated on ${date}: there are ${dictionary.length} of entries in the dictionary`;
+            }
             const returnData = {message : message, totalRequests : requestCount}
             res.writeHead(200, {"Content-Type" : "application/json"})
             res.write(JSON.stringify(returnData))

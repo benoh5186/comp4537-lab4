@@ -51,13 +51,15 @@
             }
         } else {
             if (!Validation.validate(wordInput)) {
-                wordInput.style.borderColor = "red"
-                wordLabel.innerHTML = "Please provide a word"
-                wordLabel.style.color = "red"
+                const wordInputElement = document.getElementById("word")
+                wordInputElement.style.borderColor = "red"
+                wordInputElement.innerHTML = "Please provide a word"
+                wordInputElement.style.color = "red"
             } if(!Validation.validate(definitionInput)) {
-                definitionInput.style.borderColor = "red"
-                definitionLabel.innerHTML = "Please provide a definition"
-                definitionLabel.style.color = "red"
+                const definitionInputElement = document.getElementById("definition")
+                definitionInputElement.style.borderColor = "red"
+                definitionInputElement.innerHTML = "Please provide a definition"
+                definitionInputElement.style.color = "red"
             }
 
         }
