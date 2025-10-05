@@ -4,8 +4,6 @@ const message = document.getElementById("message")
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const wordInput = document.getElementById("word")
-    const wordLabel = document.getElementById("word-label")
-    const definitionLabel  = document.getElementById("definition-label")
     const definitionInput = document.getElementById("definition")
     if (Validation.validate(wordInput.value) && Validation.validate(definitionInput.value)) {
         const formInfo = {
