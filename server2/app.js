@@ -8,7 +8,11 @@ class Server {
     constructor(port) {
         this.port = port
         this.server = http.createServer(
+
             (req, res) => {
+                res.setHeader('Access-Control-Allow-Origin', '*')
+                res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+                res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
                 API.handleRequest(req, res);
             }
         )
@@ -49,6 +53,8 @@ class API {
             }
         })
 
+        // console.log(response);
+        
         if(response) {
             res.writeHead(200, {"Content-type": "text/html"})
             res.end(response)
