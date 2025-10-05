@@ -75,20 +75,21 @@ class API {
             const definition = data.definition 
             const wordObject = new Entry(word, definition)
             const date = new Date().toDateString()
-            let message =`$#${requestCount} updated on ${date}: there are ${storage.length} of entries in the dictionary`;
-            storage.forEach(wordObject => {
+            let message =`$#${requestCount} updated on ${date}: there are ${dictionary.length} of entries in the dictionary`;
+            dictionary.forEach(wordObject => {
                 if (word === wordObject.getWord()) {
                     message = `Warning! ${word} already exists`
 
                 }
             })
-            storage.push(wordObject);
+            dictionary.push(wordObject);
             const returnData = {message : message, totalRequests : requestCount}
             res.writeHead(200, {"Content-Type" : "application/json"})
             res.write(JSON.stringify(returnData))
             res.end()}
 
         catch(error){
+            console.error("Error:", error);
             res.writeHead(400, {"Content-Type" : "application/json"})
             res.write(JSON.stringify({error : "Bad request"}))
             res.end()
@@ -100,7 +101,7 @@ class API {
 
     static getRequestBody(req) {
         return new Promise((resolve, reject) => {
-            body = ""
+            let body = ""
             req.on("data", chunk => {
                 body += chunk.toString()
             })
