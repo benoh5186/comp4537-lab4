@@ -16,8 +16,8 @@
         </form>
     </div>
 </body>
-<script>
-    import {Validation} from "./validation.js"
+<script type="module">
+    import {Validation} from "./utility.js"
     const form = document.getElementById("form");
     form.addEventListener("submit", async () => {
         const wordInput = document.getElementById("word").value
@@ -29,7 +29,7 @@
                 word : wordInput,
                 definition : definitionInput
             }
-            const response = await fetch("https://localhost:8000/api/definitions", {
+            const response = await fetch("https://localhost:8000/definitions", {
                 method: "POST",
                 body: formInfo
             });
