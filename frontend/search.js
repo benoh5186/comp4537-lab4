@@ -1,4 +1,4 @@
-import { Validation } from "./validation.js"
+import { Validation } from "./utility.js"
 import { UserInterfaceString } from "../lang/en/en.js"
 
 const search_input = document.querySelector("#search-input")
@@ -11,12 +11,10 @@ search_btn.addEventListener("click", () => {
     const search = search_input.value
     if (Validation.validate(search))
     {
-        fetch('', {
+        fetch(`https://localhost::8000/api/definitions/?word=${encodeURIComponent(search)}`, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ search })
         })
-        .then(response => response.json())
+        .then(response => response.text())
         .then(data => console.log(data))
         .catch(error => console.error(error))
     }
