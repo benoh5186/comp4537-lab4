@@ -25,19 +25,18 @@ class Server {
 class API {
 
     static async handleRequest(req, res) {
-        const method = req.method 
-
-        switch(method) {
-            case "POST": 
+        const q = url.parse(req.url, true)
+        if(q.pathname === "/definitions/") {
+            const method = req.method 
+            if(method === "POST") {
                 await this.handlePostRequest(req, res)
-                break;
-            case "GET": 
+            } else {
                 this.handleGetRequest(req, res)
-                break;
-            default:
-                res.writeHead(404, "application/json")
-                res.write(JSON.stringify({error : "incorrect endpoint"}))
-                res.end()
+            }
+        } else {
+            res.writeHead(404, "application/json")
+            res.write(JSON.stringify({error : "incorrect endpoint"}))
+            res.end()
         }
     }
 
