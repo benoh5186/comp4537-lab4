@@ -19,54 +19,8 @@
         </div>
     </div>
 </body>
-<script type="module">
-    import {Validation} from "./utility.js"
-    const form = document.getElementById("form");
-    const message = document.getElementById("message")
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const wordInput = document.getElementById("word").value
-        const wordLabel = document.getElementById("word-label")
-        const definitionLabel  = document.getElementById("definition-label")
-        const definitionInput = document.getElementById("definition").value
-        if (Validation.validate(wordInput) && Validation.validate(definitionInput)) {
-            const formInfo = {
-                word : wordInput,
-                definition : definitionInput
-            }
-            const response = await fetch("http://localhost:8000/definitions/", {
-                method: "POST",
-                headers: {
-                        "Content-Type": "application/json" 
-                    },
-                body:  JSON.stringify(formInfo)
-            });
-            if (response.ok) {
-                console.log("ok")
-                const data = await response.json();
-                message.innerHTML = data.message
-                
-            } else {
-                console.log("nah")
-            }
-        } else {
-            if (!Validation.validate(wordInput)) {
-                const wordInputElement = document.getElementById("word")
-                wordInputElement.style.borderColor = "red"
-                wordInputElement.innerHTML = "Please provide a word"
-                wordInputElement.style.color = "red"
-            } if(!Validation.validate(definitionInput)) {
-                const definitionInputElement = document.getElementById("definition")
-                definitionInputElement.style.borderColor = "red"
-                definitionInputElement.innerHTML = "Please provide a definition"
-                definitionInputElement.style.color = "red"
-            }
-
-        }
-
-
-    })
+<script type="module" src="./store.js">
     
-    
+ 
 </script>
 </html>
