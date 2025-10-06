@@ -8,9 +8,6 @@ const dictionary = []
 class Server {
     constructor(port) {
         this.port = port
-        dictionary.push(new Entry("book", "book's definition"))
-        dictionary.push(new Entry("apple", "apple's definition"))
-
         this.server = http.createServer(
             (req, res) => {
                 res.setHeader('Access-Control-Allow-Origin', '*')
