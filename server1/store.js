@@ -1,4 +1,8 @@
 import {Validation} from "./utility.js"
+import { UserInterfaceString } from "./lang/en/en.js" ;
+document.getElementById("word-label").innerHTML = UserInterfaceString.STORE_PAGE_WORD_INPUT;
+document.getElementById("definition-label").innerHTML = UserInterfaceString.STORE_PAGE_DEFINITION_INPUT;
+document.getElementById("submit-button").innerHTML = UserInterfaceString.SUBMIT_BUTTON;
 const form = document.getElementById("form");
 const message = document.getElementById("message")
 form.addEventListener("submit", async (e) => {
@@ -28,12 +32,8 @@ form.addEventListener("submit", async (e) => {
     } else {
         if (!Validation.validate(wordInput.value)) {
             wordInput.style.borderColor = "red"
-            wordInput.innerHTML = "Please provide a word"
-            wordInput.style.color = "red"
         } if(!Validation.validate(definitionInput.value)) {
             definitionInput.style.borderColor = "red"
-            definitionInput.innerHTML = "Please provide a definition"
-            definitionInput.style.color = "red"
         }
 
     }
