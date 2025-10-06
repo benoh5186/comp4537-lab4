@@ -1,5 +1,6 @@
-const http = require("http");
-const url = require("url");
+import { UserInterfaceString } from './lang/en/en.js';
+import http from 'http';
+import url from 'url';
 
 let requestCount = 0;
 const dictionary = []
@@ -7,8 +8,10 @@ const dictionary = []
 class Server {
     constructor(port) {
         this.port = port
-        this.server = http.createServer(
+        dictionary.push(new Entry("book", "book's definition"))
+        dictionary.push(new Entry("apple", "apple's definition"))
 
+        this.server = http.createServer(
             (req, res) => {
                 res.setHeader('Access-Control-Allow-Origin', '*')
                 res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
@@ -52,16 +55,13 @@ class API {
             }
         })
 
-        // console.log(response);
-        
         if(response) {
             res.writeHead(200, {"Content-type": "text/html"})
             res.end(response)
         } else {
             res.writeHead(200, {"Content-type": "text/html"})
-            res.end(`Request# ${requestCount}, word '${query} not found!'`)
+            res.end(UserInterfaceString.SEARCH_RESULT(requestCount, query))
         }
-
     }
 
 
