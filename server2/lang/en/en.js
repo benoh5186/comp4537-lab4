@@ -6,3 +6,7 @@ export class UserInterfaceString {
         return `Request# ${requestCount}, word '${query}' not found!`
     }
 }
+
+export class Endpoints {
+    static DEFINITIONS = "/definitions/"
+}

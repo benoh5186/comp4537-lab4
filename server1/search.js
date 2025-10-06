@@ -26,8 +26,4 @@ search_btn.addEventListener("click", () => {
     }
 })
 
-// console.log(Validation.validate(""));
-// console.log(Validation.validate(1));
-// console.log(Validation.validate("   ")); 
-// console.log(Validation.validate());
 

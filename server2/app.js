@@ -1,4 +1,5 @@
-import { UserInterfaceString } from './lang/en/en.js';
+import { UserInterfaceString, Endpoints } from './lang/en/en.js';
+import { Entry } from './entry.js';
 import http from 'http';
 import url from 'url';
 
@@ -8,9 +9,6 @@ const dictionary = []
 class Server {
     constructor(port) {
         this.port = port
-        dictionary.push(new Entry("book", "book's definition"))
-        dictionary.push(new Entry("apple", "apple's definition"))
-
         this.server = http.createServer(
             (req, res) => {
                 res.setHeader('Access-Control-Allow-Origin', '*')
@@ -29,7 +27,7 @@ class API {
 
     static async handleRequest(req, res) {
         const q = url.parse(req.url, true)
-        if(q.pathname === "/definitions/") {
+        if(q.pathname === Endpoints.DEFINITIONS) {
             const method = req.method 
             if(method === "POST") {
                 await this.handlePostRequest(req, res)
@@ -116,19 +114,6 @@ class API {
 
     }
 
-}
-
-class Entry {
-    constructor(word, definition) {
-        this.word = word
-        this.definition = definition
-    }
-    getWord() {
-        return this.word 
-    }
-    getDefinition() {
-        return this.definition 
-    }
 }
 
 let s = new Server(8000)
