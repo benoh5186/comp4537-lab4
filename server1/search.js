@@ -1,5 +1,5 @@
 import { Validation } from "./utility.js"
-import { UserInterfaceString } from "../lang/en/en.js"
+import { UserInterfaceString } from "./lang/en/en.js"
 
 const search_input = document.querySelector("#search-input")
 const search_btn = document.querySelector("#search-btn")
