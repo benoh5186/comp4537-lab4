@@ -65,26 +65,21 @@ class API {
 
 
     static async handlePostRequest(req, res) {
-        requestCount += 1
         try{
-            let wordExists = false
+            requestCount += 1
             const body = await API.getRequestBody(req);
             const data = JSON.parse(body)
-            const wordObject = new Entry(data.word, data.definition)
-            const date = new Date().toDateString()
-            let message;
+            const returnData = {word : data.word, totalRequests : requestCount, wordExists : false}
             dictionary.forEach(wordObject => {
                 if (data.word === wordObject.getWord()) {
-                    wordExists = true;
+                    returnData.wordExists = true;
                 }
             })
-            if (wordExists) {
-                message = `#${requestCount}: Warning! ${data.word} already exists`
-            } else {
-                dictionary.push(wordObject);
-                message =`#${requestCount} updated on ${date}: there are ${dictionary.length} of entries in the dictionary`;
+            if (!returnData.wordExists) {
+                const wordObject = new Entry(data.word, data.definition)
+                dictionary.push(wordObject)
+                returnData.dictLength = dictionary.length 
             }
-            const returnData = {message : message, totalRequests : requestCount}
             res.writeHead(200, {"Content-Type" : "application/json"})
             res.write(JSON.stringify(returnData))
             res.end()}
@@ -94,10 +89,7 @@ class API {
             res.writeHead(400, {"Content-Type" : "application/json"})
             res.write(JSON.stringify({error : "Bad request"}))
             res.end()
-
         }
-
-
     }
 
     static getRequestBody(req) {

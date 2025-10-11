@@ -1,8 +1,10 @@
 import {Validation} from "./utility.js"
 import { UserInterfaceString } from "./lang/en/en.js" ;
+
 document.getElementById("word-label").innerHTML = UserInterfaceString.STORE_PAGE_WORD_INPUT;
 document.getElementById("definition-label").innerHTML = UserInterfaceString.STORE_PAGE_DEFINITION_INPUT;
 document.getElementById("submit-button").innerHTML = UserInterfaceString.SUBMIT_BUTTON;
+
 const form = document.getElementById("form");
 const message = document.getElementById("message")
 form.addEventListener("submit", async (e) => {
@@ -24,10 +26,11 @@ form.addEventListener("submit", async (e) => {
         if (response.ok) {
             console.log("ok")
             const data = await response.json();
-            message.innerHTML = data.message
-            
-        } else {
-            console.log("nah")
+            if (data.wordExists) {
+                message.innerHTML = UserInterfaceString.ALREADY_EXISTS(data.totalRequests, data.word);
+            } else {
+                message.innerHTML = UserInterfaceString.WORD_FOUND(data.totalRequests, data.dictLength)
+            }
         }
     } else {
         if (!Validation.validate(wordInput.value)) {

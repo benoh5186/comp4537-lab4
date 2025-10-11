@@ -7,9 +7,14 @@ export class UserInterfaceString {
         return `Request# ${requestCount}, word '${query}' not found!`
     }
 
+    static ALREADY_EXISTS(requestCount, word) {
+        return `Request #${requestCount}: Warning! ${word} already exists`
+    }
 
-
-
+    static WORD_FOUND(requestCount, dictLength) {
+        const date = new Date().toDateString();
+        return `Request #${requestCount} updated on ${date}: there are ${dictLength} entries in the dictionary!`
+    }
 
     static STORE_PAGE_WORD_INPUT = "Type Word"
 
