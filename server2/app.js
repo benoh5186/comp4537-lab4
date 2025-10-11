@@ -108,5 +108,5 @@ class API {
 
 }
 
-let s = new Server(8000)
+let s = new Server(process.env.PORT || 8000)
 s.start()
