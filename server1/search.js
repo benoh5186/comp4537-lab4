@@ -13,7 +13,7 @@ search_btn.addEventListener("click", () => {
     if (Validation.validate(search))
     {
         
-        fetch(`http://localhost:8000/definitions/?word=${encodeURIComponent(search)}`, {
+        fetch(`https://comp4537-lab4-6ylr.onrender.com/definitions/?word=${encodeURIComponent(search)}`, {
             method: 'GET',
         })
         .then(response => response.text())

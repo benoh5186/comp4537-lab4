@@ -16,7 +16,7 @@ form.addEventListener("submit", async (e) => {
             word : wordInput.value,
             definition : definitionInput.value
         }
-        const response = await fetch("http://localhost:8000/definitions/", {
+        const response = await fetch("https://comp4537-lab4-6ylr.onrender.com/definitions/", {
             method: "POST",
             headers: {
                     "Content-Type": "application/json" 
