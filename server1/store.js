@@ -5,6 +5,7 @@ document.getElementById("word-label").innerHTML = UserInterfaceString.STORE_PAGE
 document.getElementById("definition-label").innerHTML = UserInterfaceString.STORE_PAGE_DEFINITION_INPUT;
 document.getElementById("submit-button").innerHTML = UserInterfaceString.SUBMIT_BUTTON;
 
+const incorrectInputColor = "red"
 const form = document.getElementById("form");
 const message = document.getElementById("message")
 form.addEventListener("submit", async (e) => {
@@ -16,7 +17,7 @@ form.addEventListener("submit", async (e) => {
             word : wordInput.value,
             definition : definitionInput.value
         }
-        const response = await fetch("https://comp4537-lab4-6ylr.onrender.com/definitions/", {
+        const response = await fetch(UserInterfaceString.SERVER_DOMAIN(), {
             method: "POST",
             headers: {
                     "Content-Type": "application/json" 
@@ -24,7 +25,6 @@ form.addEventListener("submit", async (e) => {
             body:  JSON.stringify(formInfo)
         });
         if (response.ok) {
-            console.log("ok")
             const data = await response.json();
             if (data.wordExists) {
                 message.innerHTML = UserInterfaceString.ALREADY_EXISTS(data.totalRequests, data.word);
@@ -34,9 +34,9 @@ form.addEventListener("submit", async (e) => {
         }
     } else {
         if (!Validation.validate(wordInput.value)) {
-            wordInput.style.borderColor = "red"
+            wordInput.style.borderColor = incorrectInputColor
         } if(!Validation.validate(definitionInput.value)) {
-            definitionInput.style.borderColor = "red"
+            definitionInput.style.borderColor = incorrectInputColor
         }
 
     }

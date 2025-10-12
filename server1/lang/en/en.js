@@ -16,6 +16,13 @@ export class UserInterfaceString {
         return `Request #${requestCount} updated on ${date}: there are ${dictLength} entries in the dictionary!`
     }
 
+    static SERVER_DOMAIN(query="") {
+        if (query) {
+            return `https://comp4537-lab4-6ylr.onrender.com/definitions/?word=${query}`
+        }
+        return `https://comp4537-lab4-6ylr.onrender.com/definitions/`
+    }
+
     static STORE_PAGE_WORD_INPUT = "Type Word"
 
     static STORE_PAGE_DEFINITION_INPUT = "Type Definition"
