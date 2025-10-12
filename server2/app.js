@@ -11,7 +11,7 @@ class Server {
         this.port = port
         this.server = http.createServer(
             (req, res) => {
-                res.setHeader('Access-Control-Allow-Origin', 'https://gilded-fairy-af2f9b.netlify.app/')
+                res.setHeader('Access-Control-Allow-Origin', 'https://gilded-fairy-af2f9b.netlify.app')
                 res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
                 res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
                 API.handleRequest(req, res);
