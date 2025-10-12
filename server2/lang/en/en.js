@@ -15,6 +15,9 @@ export class UserInterfaceString {
         const date = new Date().toDateString();
         return `Request #${requestCount} updated on ${date}: there are ${dictLength} of entries in the dictionary!`
     }
+
+    static INCORRECT_ENDPOINT_MSG = "incorrect endpoint"
+    static BAD_REQUEST_MSG = "Bad request"
     
 }
 

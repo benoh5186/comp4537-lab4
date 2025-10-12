@@ -3,28 +3,52 @@ import { Entry } from './entry.js';
 import http from 'http';
 import url from 'url';
 
-let requestCount = 0;
 const dictionary = []
+const FRONT_END_SERVER_DOMAIN = 'https://gilded-fairy-af2f9b.netlify.app'
+const DEFAULT_PORT = 8000
 
+let requestCount = 0;
+
+/**
+ * Represents a backend server.
+ */
 class Server {
+
+    /**
+     * Constructs an object.
+     * @param {*} port 
+     */
     constructor(port) {
         this.port = port
         this.server = http.createServer(
             (req, res) => {
-                res.setHeader('Access-Control-Allow-Origin', 'https://gilded-fairy-af2f9b.netlify.app')
+                res.setHeader('Access-Control-Allow-Origin', FRONT_END_SERVER_DOMAIN)
                 res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
                 res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
                 API.handleRequest(req, res);
             }
         )
     }
+
+    /**
+     * Starts server.
+     */
     start() {
         this.server.listen(this.port)
     }
 }
 
+
+/**
+ * Represents API.
+ */
 class API {
 
+    /**
+     * Handles reqeust.
+     * @param {*} req 
+     * @param {*} res 
+     */
     static async handleRequest(req, res) {
         const q = url.parse(req.url, true)
         if(q.pathname === Endpoints.DEFINITIONS) {
@@ -36,12 +60,18 @@ class API {
             }
         } else {
             res.writeHead(404, "application/json")
-            res.write(JSON.stringify({error : "incorrect endpoint"}))
+            res.write(JSON.stringify({error : UserInterfaceString.INCORRECT_ENDPOINT_MSG}))
             res.end()
         }
     }
 
-
+    /**
+     * Handles get request.
+     * Looks up definition of given word.
+     * If there is a corresponding definition, provide it, otherwise error message.
+     * @param {*} req 
+     * @param {*} res 
+     */
     static handleGetRequest(req, res) {
         requestCount += 1
         let response = null
@@ -62,8 +92,13 @@ class API {
         }
     }
 
-
-
+    /**
+     * Handles post request.
+     * Store word and definition.
+     * If there is already definition stored, provide error message.
+     * @param {*} req 
+     * @param {*} res 
+     */
     static async handlePostRequest(req, res) {
         try{
             requestCount += 1
@@ -87,11 +122,16 @@ class API {
         catch(error){
             console.error("Error:", error);
             res.writeHead(400, {"Content-Type" : "application/json"})
-            res.write(JSON.stringify({error : "Bad request"}))
+            res.write(JSON.stringify({error : UserInterfaceString.BAD_REQUEST_MSG}))
             res.end()
         }
     }
 
+    /**
+     * Gets request body.
+     * @param {*} req 
+     * @returns 
+     */
     static getRequestBody(req) {
         return new Promise((resolve, reject) => {
             let body = ""
@@ -103,10 +143,8 @@ class API {
             })
             req.on("error", reject)          
         })
-
     }
-
 }
 
-let s = new Server(process.env.PORT || 8000)
+let s = new Server(process.env.PORT || DEFAULT_PORT)
 s.start()
