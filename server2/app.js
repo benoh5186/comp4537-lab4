@@ -167,6 +167,12 @@ class Database {
         this.tableCreated = true;
     }
 
+    /**
+     * Handles INSERT query
+     * if the query is unsuccessful, it throws an exception(by the .query method)
+     * @param {*} query 
+     * @returns 
+    */
     async insert(query) {
         if (!this.tableCreated) {
             await this.createTable();
@@ -175,6 +181,12 @@ class Database {
         return result.affectedRows
     }
 
+    /**
+     * Handles SELECT query
+     * if the query is unsuccessful, it throws an exception(by the .query method)
+     * @param {*} query 
+     * @returns 
+     */
     async select(query) {
         if (!this.tableCreated) {
             await this.createTable();
