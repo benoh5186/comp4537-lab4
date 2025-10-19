@@ -155,5 +155,24 @@ class API {
     }
 }
 
+
+
+
+class Database {
+    createTable() {
+
+    }
+
+    insert() {
+
+    }
+
+    select() {
+
+    }
+}
+
+
+
 let s = new Server(process.env.PORT || DEFAULT_PORT)
 s.start()
