@@ -7,14 +7,6 @@ import mysql2 from `mysql2`
 const dictionary = []
 const FRONT_END_SERVER_DOMAIN = 'https://gilded-fairy-af2f9b.netlify.app'
 const DEFAULT_PORT = 8000
-const db = mysql2.createConnection({
-    host: "maglev.proxy.rlwy.net",
-    port: 3306,
-    user: "root",
-    password: "lTmuaNaOuThjMFoKkjzmDHMurzUrmJUE",
-    database: "railway"
-}
-)
 
 let requestCount = 0;
 
@@ -159,16 +151,53 @@ class API {
 
 
 class Database {
-    createTable() {
+
+    constructor() {
+        this.connection = mysql2.createConnection({
+            host: "maglev.proxy.rlwy.net",
+            port: 19615,
+            user: "root",
+            password: "lTmuaNaOuThjMFoKkjzmDHMurzUrmJUE",
+            database: "railway"
+        })
+        this.tableCreated = false
+    }
+
+    async createTable() {
+        const query = `
+            CREATE TABLE IF NOT EXISTS patient (
+                patientId INT(11) AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                dateOfBirth DATETIME NOT NULL
+            ) ENGINE=InnoDB;
+        `;
+        const conn = await this.connection;
+        await conn.query(query)
+        this.tableCreated = true;
+    }
+
+    async insert(query) {
+        if (!this.tableCreated) {
+            await this.createTable();
+        }
+        const conn = await this.connection;
+        const[result] = await conn.query(query)
+        return result.affectedRows
+
 
     }
 
-    insert() {
-
+    async select(query) {
+        if (!this.tableCreated) {
+            await this.createTable();
+        }
+        const conn = await this.connection;
+        const [rows] = await conn.query(query)
+        return rows;
     }
-
-    select() {
-
+    async close() {
+        const conn = await this.connection;
+        await conn.end();
     }
 }
 

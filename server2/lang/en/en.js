@@ -23,4 +23,6 @@ export class UserInterfaceString {
 
 export class Endpoints {
     static DEFINITIONS = "/definitions/"
+    static GET = "/GET"
+    static POST = "/POST"
 }

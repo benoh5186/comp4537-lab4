@@ -10,9 +10,9 @@ export class UserInterfaceString {
 
     static EMPTY_QUERY = "Please enter a query"
 
-    static GET_DOMAIN = "https://comp4537-lab4-6ylr.onrender.com/GET/"
+    static GET_DOMAIN = "https://comp4537-lab4-6ylr.onrender.com/GET"
 
-    static POST_DOMAIN = "https://comp4537-lab4-6ylr.onrender.com/POST/"
+    static POST_DOMAIN = "https://comp4537-lab4-6ylr.onrender.com/POST"
 
     static GET_SUCCESS(data) {
         let message = `Successfully retrieved:`;

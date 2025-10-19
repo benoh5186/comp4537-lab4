@@ -48,7 +48,7 @@ class QueryHandler {
 
     static async sendGetRequest(query) {
         const encodedQuery = encodeURIComponent(query)
-        const response = await fetch(`${UserInterfaceString.GET_DOMAIN}?query=${encodedQuery}`)
+        const response = await fetch(`${UserInterfaceString.GET_DOMAIN}/?query=${encodedQuery}`)
         if (response.ok) {
             const data = await response.json();
             feedbackArea.textContent = UserInterfaceString.GET_SUCCESS(data);
