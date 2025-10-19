@@ -33,11 +33,10 @@ submitQueryButton.addEventListener("click", async () => {
 
 class QueryHandler {
     static async executeQuery(query) {
-        const queryUpper = query.toUpperCase();
-        if(queryUpper.startsWith("SELECT")) {
+        if(query.startsWith("SELECT")) {
             await QueryHandler.sendGetRequest(query)
 
-        } else if (queryUpper.startsWith("INSERT")) {
+        } else if (query.startsWith("INSERT")) {
             await QueryHandler.sendPostRequest(query)
 
         } else {
