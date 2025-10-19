@@ -2,10 +2,19 @@ import { UserInterfaceString, Endpoints } from './lang/en/en.js';
 import { Entry } from './entry.js';
 import http from 'http';
 import url from 'url';
+import mysql2 from `mysql2`
 
 const dictionary = []
 const FRONT_END_SERVER_DOMAIN = 'https://gilded-fairy-af2f9b.netlify.app'
 const DEFAULT_PORT = 8000
+const db = mysql2.createConnection({
+    host: "maglev.proxy.rlwy.net",
+    port: 3306,
+    user: "root",
+    password: "lTmuaNaOuThjMFoKkjzmDHMurzUrmJUE",
+    database: "railway"
+}
+)
 
 let requestCount = 0;
 
