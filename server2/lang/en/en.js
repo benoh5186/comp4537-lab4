@@ -2,6 +2,10 @@
  * Represents user interface strings for server 2.
  */
 export class UserInterfaceString {
+
+    static UNSUCCESSFUL_QUERY = "Couldn't find the query data";
+
+
     static SEARCH_RESULT(requestCount, query) {
         return `Request# ${requestCount}, word '${query}' not found!`
     }
@@ -23,6 +27,4 @@ export class UserInterfaceString {
 
 export class Endpoints {
     static DEFINITIONS = "/definitions/"
-    static GET = "/GET"
-    static POST = "/POST"
 }

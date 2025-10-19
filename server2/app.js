@@ -1,14 +1,13 @@
 import { UserInterfaceString, Endpoints } from './lang/en/en.js';
-import { Entry } from './entry.js';
 import http from 'http';
 import url from 'url';
 import mysql2 from `mysql2`
 
-const dictionary = []
 const FRONT_END_SERVER_DOMAIN = 'https://gilded-fairy-af2f9b.netlify.app'
 const DEFAULT_PORT = 8000
 
-let requestCount = 0;
+const db = new Database();
+
 
 /**
  * Represents a backend server.
@@ -32,10 +31,12 @@ class Server {
     }
 
     /**
-     * Starts server.
+     * Starts server and adds connection to the database instance;
      */
     start() {
-        this.server.listen(this.port)
+        this.server.listen(this.port, async () => {
+            await db.connect();
+        })
     }
 }
 
@@ -51,15 +52,13 @@ class API {
      * @param {*} res 
      */
     static async handleRequest(req, res) {
-        const q = url.parse(req.url, true)
-        if(q.pathname === Endpoints.DEFINITIONS) {
-            const method = req.method 
-            if(method === "POST") {
-                await this.handlePostRequest(req, res)
-            } else {
-                this.handleGetRequest(req, res)
+        const method = req.method 
+        if(method === "POST") {
+            await this.handlePostRequest(req, res)
+        } else if (method === "GET"){
+            await this.handleGetRequest(req, res)
             }
-        } else {
+         else {
             res.writeHead(404, "application/json")
             res.write(JSON.stringify({error : UserInterfaceString.INCORRECT_ENDPOINT_MSG}))
             res.end()
@@ -67,63 +66,52 @@ class API {
     }
 
     /**
-     * Handles get request.
-     * Looks up definition of given word.
-     * If there is a corresponding definition, provide it, otherwise error message.
+     * Handles get request and SELECT queries.
+     * If SELECT query is successful, rows data is written to the response in json with status code 200.
+     * if no such data is found in the database or the query is invalid, status code is 400 with an error message
      * @param {*} req 
      * @param {*} res 
      */
-    static handleGetRequest(req, res) {
-        requestCount += 1
-        let response = null
-        const query = url.parse(req.url, true).query["word"]
-
-        dictionary.forEach((entry) => {
-            if(entry.getWord() === query) {
-                response = entry.getDefinition()
+    static async handleGetRequest(req, res) {
+        const query = url.parse(req.url, true).query["query"]
+        try {
+            const result = await db.select(query)
+            if (result) {
+                res.writeHead(200, {"Content-type": "application/json"})
+                res.write(JSON.stringify({result : result}))
+                res.end()
+            } else {
+                res.writeHead(400, {"Content-type" : "application/json"})
+                res.write(JSON.stringify({error : UserInterfaceString.UNSUCCESSFUL_QUERY}))
+                res.end()
             }
-        })
-
-        if(response) {
-            res.writeHead(200, {"Content-type": "text/html"})
-            res.end(response)
-        } else {
-            res.writeHead(200, {"Content-type": "text/html"})
-            res.end(UserInterfaceString.SEARCH_RESULT(requestCount, query))
+        }
+        catch(err) {
+            res.writeHead(400, {"Content-type" : "application/json"})
+            res.write(JSON.stringify({error : err.message}))
+            res.end()
         }
     }
 
     /**
-     * Handles post request.
-     * Store word and definition.
-     * If there is already definition stored, provide error message.
+     * Handles post request and INSERT queries.
+     * if the query is invalid, status code is 400 with an error message
      * @param {*} req 
      * @param {*} res 
      */
     static async handlePostRequest(req, res) {
         try{
-            requestCount += 1
             const body = await API.getRequestBody(req);
             const data = JSON.parse(body)
-            const returnData = {word : data.word, totalRequests : requestCount, wordExists : false}
-            dictionary.forEach(wordObject => {
-                if (data.word === wordObject.getWord()) {
-                    returnData.wordExists = true;
-                }
-            })
-            if (!returnData.wordExists) {
-                const wordObject = new Entry(data.word, data.definition)
-                dictionary.push(wordObject)
-                returnData.dictLength = dictionary.length 
-            }
+            const result = await db.insert(data.query)
             res.writeHead(200, {"Content-Type" : "application/json"})
-            res.write(JSON.stringify(returnData))
+            res.write(JSON.stringify({result : result}))
             res.end()}
 
-        catch(error){
+        catch(err){
             console.error("Error:", error);
             res.writeHead(400, {"Content-Type" : "application/json"})
-            res.write(JSON.stringify({error : UserInterfaceString.BAD_REQUEST_MSG}))
+            res.write(JSON.stringify({error : err.message}))
             res.end()
         }
     }
@@ -153,14 +141,18 @@ class API {
 class Database {
 
     constructor() {
-        this.connection = mysql2.createConnection({
+        this.connection = null;
+        this.tableCreated = false
+    }
+
+    async connect() {
+        this.connection = await mysql2.createConnection({
             host: "maglev.proxy.rlwy.net",
             port: 19615,
             user: "root",
             password: "lTmuaNaOuThjMFoKkjzmDHMurzUrmJUE",
             database: "railway"
-        })
-        this.tableCreated = false
+        });
     }
 
     async createTable() {
@@ -171,8 +163,7 @@ class Database {
                 dateOfBirth DATETIME NOT NULL
             ) ENGINE=InnoDB;
         `;
-        const conn = await this.connection;
-        await conn.query(query)
+        await this.connection.query(query);
         this.tableCreated = true;
     }
 
@@ -180,8 +171,7 @@ class Database {
         if (!this.tableCreated) {
             await this.createTable();
         }
-        const conn = await this.connection;
-        const[result] = await conn.query(query)
+        const[result] = await this.connection.query(query);
         return result.affectedRows
 
 
@@ -191,13 +181,13 @@ class Database {
         if (!this.tableCreated) {
             await this.createTable();
         }
-        const conn = await this.connection;
-        const [rows] = await conn.query(query)
+        const [rows] = await this.connection.query(query);
         return rows;
     }
     async close() {
-        const conn = await this.connection;
-        await conn.end();
+        if (this.connection) {
+            await this.connection.end();
+        }
     }
 }
 
