@@ -76,7 +76,7 @@ class API {
         const query = url.parse(req.url, true).query["query"]
         try {
             const result = await db.select(query)
-            if (result) {
+            if (result.length > 0) {
                 res.writeHead(200, {"Content-type": "application/json"})
                 res.write(JSON.stringify({result : result}))
                 res.end()
@@ -173,8 +173,6 @@ class Database {
         }
         const[result] = await this.connection.query(query);
         return result.affectedRows
-
-
     }
 
     async select(query) {
