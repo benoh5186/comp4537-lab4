@@ -64,7 +64,7 @@ class QueryHandler {
             headers: {
                 "Content-Type" : "application/json"
             },
-            body: JSON.stringify({theQuery: query})
+            body: JSON.stringify({query: query})
         })
         if (response.ok) {
             const successInsertMessage = UserInterfaceString.POST_SUCCESS;
