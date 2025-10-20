@@ -1,7 +1,7 @@
 import { UserInterfaceString, Endpoints } from './lang/en/en.js';
 import http from 'http';
 import url from 'url';
-import mysql2 from `mysql2`
+import mysql2 from 'mysql2'
 
 const FRONT_END_SERVER_DOMAIN = 'https://gilded-fairy-af2f9b.netlify.app'
 const DEFAULT_PORT = 8000
@@ -109,7 +109,6 @@ class API {
             res.end()}
 
         catch(err){
-            console.error("Error:", error);
             res.writeHead(400, {"Content-Type" : "application/json"})
             res.write(JSON.stringify({error : err.message}))
             res.end()
