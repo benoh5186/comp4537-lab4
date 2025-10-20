@@ -6,9 +6,6 @@ import mysql2 from 'mysql2'
 const FRONT_END_SERVER_DOMAIN = 'https://gilded-fairy-af2f9b.netlify.app'
 const DEFAULT_PORT = 8000
 
-const db = new Database();
-
-
 /**
  * Represents a backend server.
  */
@@ -18,14 +15,15 @@ class Server {
      * Constructs an object.
      * @param {*} port 
      */
-    constructor(port) {
+    constructor(port, db) {
         this.port = port
+        this.db = db
         this.server = http.createServer(
             (req, res) => {
                 res.setHeader('Access-Control-Allow-Origin', FRONT_END_SERVER_DOMAIN)
                 res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
                 res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
-                API.handleRequest(req, res);
+                API.handleRequest(req, res, this.db);
             }
         )
     }
@@ -35,7 +33,7 @@ class Server {
      */
     start() {
         this.server.listen(this.port, async () => {
-            await db.connect();
+            await this.db.connect();
         })
     }
 }
@@ -51,12 +49,12 @@ class API {
      * @param {*} req 
      * @param {*} res 
      */
-    static async handleRequest(req, res) {
+    static async handleRequest(req, res, db) {
         const method = req.method 
         if(method === "POST") {
-            await this.handlePostRequest(req, res)
+            await this.handlePostRequest(req, res, db)
         } else if (method === "GET"){
-            await this.handleGetRequest(req, res)
+            await this.handleGetRequest(req, res, db)
             }
          else {
             res.writeHead(404, "application/json")
@@ -72,7 +70,7 @@ class API {
      * @param {*} req 
      * @param {*} res 
      */
-    static async handleGetRequest(req, res) {
+    static async handleGetRequest(req, res, db) {
         const query = url.parse(req.url, true).query["query"]
         try {
             const result = await db.select(query)
@@ -99,7 +97,7 @@ class API {
      * @param {*} req 
      * @param {*} res 
      */
-    static async handlePostRequest(req, res) {
+    static async handlePostRequest(req, res, db) {
         try{
             const body = await API.getRequestBody(req);
             const data = JSON.parse(body)
@@ -201,6 +199,6 @@ class Database {
 }
 
 
-
-let s = new Server(process.env.PORT || DEFAULT_PORT)
+const db = new Database();
+let s = new Server(process.env.PORT || DEFAULT_PORT, db)
 s.start()
