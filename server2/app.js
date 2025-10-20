@@ -51,6 +51,11 @@ class API {
      */
     static async handleRequest(req, res, db) {
         const method = req.method 
+        if(method === "OPTIONS") {
+            res.writeHead(200);
+            res.end();
+            return;
+        }
         if(method === "POST") {
             await this.handlePostRequest(req, res, db)
         } else if (method === "GET"){
