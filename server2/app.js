@@ -1,4 +1,4 @@
-import { UserInterfaceString, Endpoints } from './lang/en/en.js';
+import { UserInterfaceString} from './lang/en/en.js';
 import http from 'http';
 import url from 'url';
 import mysql2 from 'mysql2/promise'
